@@ -3,8 +3,8 @@ const Balcao = require('../models/BalcaoAtendimento');
 module.exports = () => {
   async function addBalcao(dados) {
     return await Balcao.create({ 
-      atendente_balcao: dados.atendente_balcao, 
-      fila_atendimento: dados.fila_atendimento 
+      "atendente_balcao": dados.atendente_balcao, 
+      "fila_atendimento": dados.fila_atendimento 
     });
   }
 

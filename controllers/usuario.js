@@ -18,8 +18,8 @@ module.exports = () => {
   async function atualizarUsuario(dados, id) {
     return await Usuario.update(
       { 
-        senha: dados.senha,
-        usuario: dados.usuario, 
+        "senha": dados.senha,
+        "usuario": dados.usuario, 
       },
       { where: { id: id }}
     );
@@ -44,7 +44,7 @@ module.exports = () => {
   }
 
   async function login(dados) {
-    const usuarBD = await Usuario.findOne({ where: { usuario: dados.usuario } });
+    const usuarBD = await Usuario.findOne({ where: { "usuario": dados.usuario } });
     const checked = await checkSenha(dados.senha, usuarBD.senha);
 
     if(checked == true) {
