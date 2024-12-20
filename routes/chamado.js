@@ -1,6 +1,7 @@
 module.exports = (app) => {
   app.post('/api/chamado/registrar', async (req, res) => {
     const chamado = req.body;
+    let confirma;
     let erro = [];
     let statusRet = 400;
 
@@ -8,20 +9,20 @@ module.exports = (app) => {
       erro.push('No campo estado do chamado utilize apenas siglas');
     }
 
-    const confir = await app.controllers.chamado.duplicidadeChamado(chamado.customer_id, chamado.serial_number);
+    confirma = await app.controllers.chamado.duplicidadeChamado(chamado.customer_id, chamado.serial_number);
 
-    if(confir.length > 0) {
+    if(confirma.length > 0) {
       erro.push('este serial já está registrado em outro chamado');
 
-      confir.forEach(cha => {
+      confirma.forEach(cha => {
         erro.push(`localhost:${process.env.PORT}/api/chamado/${cha.id}`); 
       });
       statusRet = 409;
     }
+    
+    confirma = await app.controllers.chamado.confirmEmAndamento(chamado.serial_number);
 
-    const conAnda = await app.controllers.chamado.confirmEmAndamento(chamado.serial_number);
-
-    if(confir.length == 0 && conAnda.length > 0) {
+    if(confirma.length == 0 && confirma.length > 0) {
       erro.push('este serial já está em um chamado em andamento!');
       statusRet = 403;
     }
@@ -33,7 +34,8 @@ module.exports = (app) => {
         res.status(201).json({
           status: 201,
           metodo: 'Chamado',
-          mensagem: `Chamado nº${retorno.id} cadastrado com sucesso`
+          mensagem: `Chamado nº${retorno.id} cadastrado com sucesso`,
+          id: retorno.id
         });
 
       } catch(e) {
@@ -191,7 +193,6 @@ module.exports = (app) => {
         res.status(400).json({
           status: 400,
           metodo: 'Chamado',
-          mensagem: `Falha ao alterar o chamado`,
           error: e.message
         });
       }
@@ -199,7 +200,6 @@ module.exports = (app) => {
       res.status(400).json({
         status: 400,
         metodo: 'Chamado',
-        mensagem: `Falha ao alterar o chamado`,
         error: erro
       });
     }

@@ -8,7 +8,8 @@ module.exports = (app) => {
       res.status(201).json({
         status: 201,
         metodo: 'Balcão de Atendimento',
-        mensagem: `O balcão ${registro.fila_atendimento} foi cadastrado com sucesso`
+        mensagem: `O balcão ${registro.fila_atendimento} foi cadastrado com sucesso`,
+        id_balcao: registro.id
       });
 
     } catch(e) {

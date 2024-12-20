@@ -11,17 +11,17 @@ module.exports = () => {
     });
   }
 
-  async function consultaUsuario(id) {
-    return await Usuario.findByPk(id, { attributes: ['customer_id', 'usuario', 'createdAt'] });
+  async function consultaUsuario(customer_id) {
+    return await Usuario.findByPk(customer_id, { attributes: ['customer_id', 'usuario', 'createdAt'] });
   }
 
-  async function atualizarUsuario(dados, id) {
+  async function atualizarUsuario(dados, customer_id) {
     return await Usuario.update(
       { 
         "senha": dados.senha,
         "usuario": dados.usuario, 
       },
-      { where: { id: id }}
+      { where: { customer_id: customer_id }}
     );
   }
 
@@ -39,7 +39,7 @@ module.exports = () => {
 
     return await Usuario.update(
       { senha: senhaH },
-      { where: { id: id }}
+      { where: { customer_id: id }}
     );
   }
 
@@ -48,7 +48,7 @@ module.exports = () => {
     const checked = await checkSenha(dados.senha, usuarBD.senha);
 
     if(checked == true) {
-      return await consultaUsuario(usuarBD.id);
+      return await consultaUsuario(usuarBD.customer_id);
     }
   }
 

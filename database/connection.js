@@ -8,7 +8,8 @@ function connectionBD() {
     const connection = new Sequelize(process.env.BD_BASE, process.env.BD_USER, process.env.BD_PASS, {
         host: process.env.BD_HOST,
         dialect: "mysql",
-        timezone: "-03:00"
+        timezone: "-03:00",
+        logging: false
       }
     );
 

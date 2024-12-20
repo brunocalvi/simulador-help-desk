@@ -19,7 +19,8 @@ module.exports = (app) => {
         res.status(201).json({
           status: 201,
           metodo: 'Usuário',
-          mensagem: `O usuário ${retorno.usuario} foi cadastrado com sucesso`
+          mensagem: `O usuário ${retorno.usuario} foi cadastrado com sucesso`,
+          id_usuario: retorno.customer_id
         });
 
       } catch(e) {
@@ -148,8 +149,8 @@ module.exports = (app) => {
 
       } else {
 
-        res.status(200).json({
-          status: 200,
+        res.status(409).json({
+          status: 409,
           metodo: 'Usuário',
           mensagem: `Usuário ou senha invalidos!`,
           usuario: resultado 

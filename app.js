@@ -14,12 +14,16 @@ app.use(bodyParser.json());
 // Disponibiliza a conexão para os outros módulos
 app.database = { connection }; 
 
-consign({ verbose: true })
+consign({ verbose: false })
   .include("controllers")
   .then("common")
   .then("routes")
   .into(app);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Servidor rodando na porta ${process.env.PORT}!`);
-});
+module.exports = app;
+
+//app.listen(process.env.PORT, () => {
+//  console.log(`Servidor rodando na porta ${process.env.PORT}!`);
+//});
+
+
