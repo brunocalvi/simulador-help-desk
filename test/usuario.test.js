@@ -2,8 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 
 let usuarioTest = {
-  usuario: `Test ${Date.now()}`,
-  senha: `Vp.cew*${Date.now()}`
+  "usuario": `Test.${Date.now()}`,
+  "senha": 'Vp.cew*12345@',
+  "customer_id": `${Date.now()}`
 }
 
 let id_usuario;

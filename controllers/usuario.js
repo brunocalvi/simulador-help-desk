@@ -7,21 +7,22 @@ module.exports = () => {
 
     return await Usuario.create({ 
       "usuario": dados.usuario,
-      "senha": senhaH
+      "senha": senhaH,
+      "customer_id": dados.customer_id
     });
   }
 
-  async function consultaUsuario(customer_id) {
-    return await Usuario.findByPk(customer_id, { attributes: ['customer_id', 'usuario', 'createdAt'] });
+  async function consultaUsuario(id_usuario) {
+    return await Usuario.findByPk(id_usuario, { attributes: ['id', 'customer_id', 'usuario', 'createdAt'] });
   }
 
-  async function atualizarUsuario(dados, customer_id) {
+  async function atualizarUsuario(dados, id_usuario) {
     return await Usuario.update(
       { 
         "senha": dados.senha,
         "usuario": dados.usuario, 
       },
-      { where: { customer_id: customer_id }}
+      { where: { id_usuario: id_usuario }}
     );
   }
 
@@ -39,7 +40,7 @@ module.exports = () => {
 
     return await Usuario.update(
       { senha: senhaH },
-      { where: { customer_id: id }}
+      { where: { id: id }}
     );
   }
 
@@ -48,9 +49,13 @@ module.exports = () => {
     const checked = await checkSenha(dados.senha, usuarBD.senha);
 
     if(checked == true) {
-      return await consultaUsuario(usuarBD.customer_id);
+      return await consultaUsuario(usuarBD.id);
     }
   }
 
-  return { addUsuario, consultaUsuario, atualizarUsuario, atualizarSenha, login, checkSenha }
+  async function retornaIdPorCustomer(customer_id) {
+    return await Usuario.findOne({ where: { "customer_id": customer_id } });
+  }
+
+  return { addUsuario, consultaUsuario, atualizarUsuario, atualizarSenha, login, checkSenha, retornaIdPorCustomer }
 }

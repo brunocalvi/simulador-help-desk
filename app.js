@@ -18,12 +18,9 @@ consign({ verbose: false })
   .include("controllers")
   .then("common")
   .then("routes")
+  .then("jobs")
   .into(app);
 
 module.exports = app;
-
-//app.listen(process.env.PORT, () => {
-//  console.log(`Servidor rodando na porta ${process.env.PORT}!`);
-//});
 
 

@@ -15,12 +15,12 @@ const Chamado = connection.define('tb_chamados', {
       key: "id",
     }
   },
-  customer_id: {
+  id_usuario: {
     type: Sequelize.INTEGER,
     allowNull: false,
     references: {
       model: "tb_usuarios",
-      key: "customer_id",
+      key: "id",
     }
   },
   device_id: {
@@ -28,7 +28,7 @@ const Chamado = connection.define('tb_chamados', {
     allowNull: false,
   },
   serial_number: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false,
   },
   motivo_chamado: {
@@ -41,12 +41,17 @@ const Chamado = connection.define('tb_chamados', {
   },
 });
 
-/*Chamado.sync({ alter: true })
-.then(() => {
-  console.log("Tabela 'tb_chamados' sincronizada com sucesso!");
-})
-.catch((error) => {
-  console.error("Erro ao sincronizar a tabela:", error.message);
-});*/
+//User.sync({ force: true })
+//User.sync({ alter: true })
+
+/*
+Chamado.sync({ alter: true })
+  .then(() => {
+    console.log("Tabela 'tb_chamados' sincronizada com sucesso!");
+  })
+  .catch((error) => {
+    console.error("Erro ao sincronizar a tabela:", error.message);
+  });
+*/
 
 module.exports = Chamado;

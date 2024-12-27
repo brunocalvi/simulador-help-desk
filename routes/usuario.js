@@ -20,7 +20,7 @@ module.exports = (app) => {
           status: 201,
           metodo: 'Usuário',
           mensagem: `O usuário ${retorno.usuario} foi cadastrado com sucesso`,
-          id_usuario: retorno.customer_id
+          id_usuario: retorno.id
         });
 
       } catch(e) {

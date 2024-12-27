@@ -1,7 +1,6 @@
 module.exports = (app) => {
   app.post('/api/chamado/registrar', async (req, res) => {
     const chamado = req.body;
-    let confirma;
     let erro = [];
     let statusRet = 400;
 
@@ -9,41 +8,60 @@ module.exports = (app) => {
       erro.push('No campo estado do chamado utilize apenas siglas');
     }
 
-    confirma = await app.controllers.chamado.duplicidadeChamado(chamado.customer_id, chamado.serial_number);
+    const duplicidade = await app.controllers.chamado.duplicidadeChamado(chamado.id_usuario, chamado.serial_number);
 
-    if(confirma.length > 0) {
-      erro.push('este serial já está registrado em outro chamado');
+    if(duplicidade.length > 0 && erro.length == 0) {
+      erro.push('Este serial já está registrado em outro chamado:');
 
-      confirma.forEach(cha => {
+      duplicidade.forEach(cha => {
         erro.push(`localhost:${process.env.PORT}/api/chamado/${cha.id}`); 
       });
       statusRet = 409;
     }
-    
-    confirma = await app.controllers.chamado.confirmEmAndamento(chamado.serial_number);
 
-    if(confirma.length == 0 && confirma.length > 0) {
-      erro.push('este serial já está em um chamado em andamento!');
+    const andamento = await app.controllers.chamado.confirmEmAndamento(chamado.serial_number);
+
+    if(andamento.length > 0 && erro.length == 0) {
+      erro.push('Este serial já está em um chamado em andamento!');
       statusRet = 403;
     }
 
+    /*const limite = await app.controllers.chamado.countLimitBalcao(chamado.id_atendimento);
+
+    if(limite.count >= 5 && erro.length == 0) {
+      const fila = await app.jobs.chamadoEmEspera.addNaFila(chamado);
+
+      erro.push('O balcão de atendimento chegou no limite de chamados em espera, você entrou em uma fila para aguardar!');
+      erro.push(`Posição na fila: ${fila}`);
+      statusRet = 200;
+    }*/
+    
     if(erro[0] == undefined || erro[0] == '') {
       try {
-        const retorno = await app.controllers.chamado.addChamado(chamado);
+        const fila = await app.jobs.chamadoEmEspera.addNaFila(chamado);
+
+        res.status(200).json({
+          status: 200,
+          metodo: 'Chamado',
+          mensagem: `O chamado entrou em uma fila de processamento!'`,
+          fila: fila
+        });
+
+        /*const retorno = await app.controllers.chamado.addChamado(chamado);
 
         res.status(201).json({
           status: 201,
           metodo: 'Chamado',
           mensagem: `Chamado nº${retorno.id} cadastrado com sucesso`,
           id: retorno.id
-        });
+        });*/
 
       } catch(e) {
         res.status(400).json({
           status: 400,
           metodo: 'Chamado',
           mensagem: `Falha ao cadastrar o chamado`,
-          error: e.message
+          alerta: e.message
         });
       }
     } else {
@@ -52,7 +70,7 @@ module.exports = (app) => {
         status: statusRet,
         metodo: 'Chamado',
         mensagem: `Falha ao cadastrar o chamado`,
-        error: erro
+        alerta: erro
       });
 
     }
@@ -89,31 +107,38 @@ module.exports = (app) => {
 
   app.get('/api/chamado/customer', async (req, res) => {
     // Exemplo: http://servidor/api/chamado/customer?customer_id=1&page=2&size=20
+    const { customer_id, page = 1, size = 10 } = req.query;
+
     try {
-      const { customer_id, page = 1, size = 10 } = req.query;
-      const { count, rows: todosChamados } = await app.controllers.chamado.consultarChamCustomer(customer_id, page, parseInt(size));
-
-      res.status(200).json({
-          status: 200,
+      const id = await app.controllers.usuario.retornaIdPorCustomer(customer_id);
+      let id_usuario = id.id;
+  
+      try {   
+        const { count, rows: todosChamados } = await app.controllers.chamado.consultarChamCustomer(id_usuario, page, parseInt(size));
+  
+        res.status(200).json({
+            status: 200,
+            metodo: 'Chamado',
+            mensagem: 'Lista por customer_id',
+            registros: count,
+            paginacao: {
+              paginaAtual: page,
+              quantidadePorPagina: size,
+              paginas: Math.ceil(count / size)
+            },
+            chamados: todosChamados,
+  
+        });
+      } catch(e) {
+        res.status(400).json({
+          status: 400,
           metodo: 'Chamado',
-          mensagem: 'Lista por customer_id',
-          registros: count,
-          paginacao: {
-            paginaAtual: page,
-            quantidadePorPagina: size,
-            paginas: Math.ceil(count / size)
-          },
-          chamados: todosChamados,
-
-      });
-    } catch(e) {
-      res.status(400).json({
-        status: 400,
-        metodo: 'Chamado',
-        mensagem: `Falha ao visualizar os chamados`,
-        error: e.message
-      });
-    }
+          mensagem: `Falha ao visualizar os chamados`,
+          error: e.message
+        });
+      }
+    } catch(e) { console.log(e) }
+    
   });
 
   app.get('/api/chamado/:id', async (req, res) => {

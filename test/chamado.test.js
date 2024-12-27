@@ -7,8 +7,9 @@ let balcaoTest = {
 };
 
 let usuarioTest = {
-  usuario: `Test ${Date.now()}`,
-  senha: `Vp.cew*${Date.now()}`
+  "usuario": `Test.${Date.now()}`,
+  "senha": `Vp.cew*${Date.now()}`,
+  "customer_id": `${Date.now()}`
 }
 
 let id_balcao;
@@ -19,7 +20,7 @@ let serial = Date.now();
 function criarChamado(dados) {
   return {
     id_atendimento: dados.id_atendimento || 99,
-    customer_id: dados.customer_id || 99,
+    id_usuario: dados.id_usuario || 99,
     motivo_chamado: dados.motivo_chamado || 'teste de chamado',
     estado_chamado: dados.estado_chamado || 'EE',
     device_id: dados.device_id || 1,
@@ -55,24 +56,29 @@ test('Deve registrar um usuário com sucesso para o chamado', async () => {
 test('Deve registrar um chamado para a bateria', async () => {
   const chamado = criarChamado({
     id_atendimento: id_balcao, 
-    customer_id: id_usuario
+    id_usuario: id_usuario
   });
 
+  // ajustado por causa da implantação da fila
+  const resultado = await app.controllers.chamado.addChamado(chamado);
+  id_chamado = resultado.id;
+  expect(resultado.id).not.toBeNull();
+
+  /*
   return await request(app).post('/api/chamado/registrar')
     .send(chamado)
     .then((res) => {
-
       id_chamado = res.body.id; 
-
       expect(res.status).toEqual(201);
       expect(res.body.id).not.toBeNull();
     });
+  */
 });
 
 test('Não Deve registrar um chamado com o campo estado do chamado tendo mais de 2 siglas', async () => {
   const chamado = criarChamado({
     id_atendimento: id_balcao, 
-    customer_id: id_usuario, 
+    id_usuario: id_usuario, 
     serial_number: 1234567890,
     estado_chamado: 'abcd1234'
   });
@@ -88,7 +94,7 @@ test('Não Deve registrar um chamado com o campo estado do chamado tendo mais de
 test.skip('Não deve deixar registrar um chamado duplicado', async () => {
   const chamado = criarChamado({ 
     id_atendimento: id_balcao, 
-    customer_id: id_usuario, 
+    id_usuario: id_usuario, 
     serial_number: serial
   });
 
@@ -122,7 +128,7 @@ test('Deve lista todos os chamados', async () => {
 });
 
 test('Deve lista todos os chamados por customer_id', async () => {
-  return await request(app).get(`/api/chamado/customer?customer_id=${id_usuario}&page=1&size=10`)
+  return await request(app).get(`/api/chamado/customer?customer_id=${usuarioTest.customer_id}&page=1&size=10`)
     .then((res) => {
       expect(res.status).toEqual(200);
       expect(res.body.chamados).not.toBeNull();
@@ -153,7 +159,7 @@ describe('Ao alterar um chamado ...', () => {
   test('Deve atualizar o chamado com sucesso', async () => {
     const chamado = criarChamado({
       id_atendimento: 99,
-      customer_id: 99,
+      id_usuario: id_usuario,
       motivo_chamado: 'Chamado atualizado',
       estado_chamado: 'CO',
       device_id: 1,
