@@ -22,7 +22,6 @@ BalcaoAtendimento.hasMany(Chamado, {
   foreignKey: 'id_atendimento'
 });
 
-/*
 BalcaoAtendimento.sync({ alter: true })
   .then(() => {
     console.log("Tabela 'tb_balcao_atendimentos' sincronizada com sucesso!");
@@ -30,6 +29,5 @@ BalcaoAtendimento.sync({ alter: true })
   .catch((error) => {
     console.error("Erro ao sincronizar a tabela:", error.message);
   });
-*/
 
 module.exports = BalcaoAtendimento;

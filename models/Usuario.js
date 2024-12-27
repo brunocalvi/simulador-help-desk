@@ -26,7 +26,6 @@ Usuario.hasMany(Chamado, {
   foreignKey: 'id_usuario'
 });
 
-/*
 Usuario.sync({ alter: true })
   .then(() => {
     console.log("Tabela 'tb_usuarios' sincronizada com sucesso!");
@@ -34,6 +33,5 @@ Usuario.sync({ alter: true })
   .catch((error) => {
     console.error("Erro ao sincronizar a tabela:", error.message);
   });
-*/
 
 module.exports = Usuario;

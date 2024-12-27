@@ -9,8 +9,7 @@ module.exports = (app) => {
   const JOB_OPTIONS = {
     attempts: 3, // Tentativas em caso de falha
     backoff: 1000, // Tempo de espera entre tentativas (ms)
-    //delay: 180000, // Atraso de 3 minutos (em milissegundos)
-    delay: 60000,
+    delay: 180000, // Atraso de 3 minutos (em milissegundos)
   };
 
   // Configura a fila no Redis

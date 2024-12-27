@@ -41,10 +41,9 @@ const Chamado = connection.define('tb_chamados', {
   },
 });
 
-//User.sync({ force: true })
-//User.sync({ alter: true })
+//Chamado.sync({ force: true })
+//Chamado.sync({ alter: true })
 
-/*
 Chamado.sync({ alter: true })
   .then(() => {
     console.log("Tabela 'tb_chamados' sincronizada com sucesso!");
@@ -52,6 +51,5 @@ Chamado.sync({ alter: true })
   .catch((error) => {
     console.error("Erro ao sincronizar a tabela:", error.message);
   });
-*/
 
 module.exports = Chamado;

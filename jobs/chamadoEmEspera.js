@@ -6,13 +6,12 @@ module.exports = (app) => {
     port: 6379,
   };
 
-  const MAX_WAITING_COUNT = 2;
+  const MAX_WAITING_COUNT = 5; // quantidade parada na fila
 
   const JOB_OPTIONS = {
     attempts: 3, // Tentativas em caso de falha
     backoff: 1000, // Tempo de espera entre tentativas (ms)
-    //delay: 120000, // Atraso de 2 minutos (em milissegundos)
-    delay: 60000,
+    delay: 120000, // Atraso de 2 minutos (em milissegundos)
   };
 
   let filaPausada = false;
