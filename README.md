@@ -75,21 +75,6 @@ npm run test
 yarn run test
 ```
 
-## Rotas da API
-
-### Balcões de Atendimento
-- `POST /api/balcaoAtendimento/registrar`: Registra um novo balcão.
-
-### Usuários
-- `POST /api/usuario/registrar`: Registra um novo usuário.
-
-### Chamados
-- `POST /api/chamado/registrar`: Registra um novo chamado.
-
-## Contribuições
-
-Contribuições são bem-vindas!
-
 ## Autor
 
 Desenvolvido por [Bruno Calvi](https://github.com/brunocalvi).
